@@ -975,6 +975,45 @@ public class WorkshopRouter extends Router
 				throw new ServerErrorException(exception);
 			}
 		});
+		this.addHandler(new Route.Builder(Request.Method.POST, "/smelting/$slotIndex/addFuel").build(), request ->
+		{
+			int slotIndex = request.getParameterInt("slotIndex");
+			if (slotIndex < 1 || slotIndex > 3)
+			{
+				return Response.badRequest();
+			}
+
+			try
+			{
+				String playerId = request.getContextData("playerId");
+				EarthDB.Results results = new EarthDB.Query(true)
+						.get("smelting", playerId, SmeltingSlots.class)
+						.get("inventory", playerId, Inventory.class)
+						.then(results1 ->
+						{
+							EarthDB.Query query = new EarthDB.Query(true);
+
+							SmeltingSlots smeltingSlots = (SmeltingSlots) results1.get("smelting").value();
+							SmeltingSlot smeltingSlot = smeltingSlots.slots[slotIndex - 1];
+							Inventory inventory = (Inventory) results1.get("inventory").value();
+
+							if (smeltingSlot.locked || smeltingSlot.activeJob == null)
+							{
+								return query;
+							}
+
+							query.update("smelting", playerId, smeltingSlots).update("inventory", playerId, inventory);
+							return query;
+						})
+						.execute(earthDB);
+				return Response.okFromJson(new EarthApiResponse<>(new HashMap<>(), new EarthApiResponse.Updates(results)), EarthApiResponse.class);
+			}
+			catch (DatabaseException exception)
+			{
+				throw new ServerErrorException(exception);
+			}
+		});
+
 		this.addHandler(new Route.Builder(Request.Method.POST, "/smelting/$slotIndex/unlock").build(), request ->
 		{
 			int slotIndex = request.getParameterInt("slotIndex");

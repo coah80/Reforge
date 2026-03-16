@@ -2,12 +2,14 @@ package micheal65536.vienna.apiserver.routes;
 
 import org.jetbrains.annotations.NotNull;
 
+import micheal65536.vienna.apiserver.routes.player.AdventuresRouter;
 import micheal65536.vienna.apiserver.routes.player.BoostsRouter;
 import micheal65536.vienna.apiserver.routes.player.BuildplatesRouter;
 import micheal65536.vienna.apiserver.routes.player.ChallengesRouter;
 import micheal65536.vienna.apiserver.routes.player.InventoryRouter;
 import micheal65536.vienna.apiserver.routes.player.JournalRouter;
 import micheal65536.vienna.apiserver.routes.player.ProfileRouter;
+import micheal65536.vienna.apiserver.routes.player.StoreRouter;
 import micheal65536.vienna.apiserver.routes.player.TappablesRouter;
 import micheal65536.vienna.apiserver.routes.player.TokensRouter;
 import micheal65536.vienna.apiserver.routes.player.WorkshopRouter;
@@ -34,5 +36,7 @@ public class PlayerRouter extends Router
 		this.addSubRouter("/*", 0, new BuildplatesRouter(earthDB, objectStoreClient, buildplateInstancesManager, tappablesManager, staticData.catalog));
 		this.addSubRouter("/*", 0, new TappablesRouter(earthDB, eventBusClient, tappablesManager, staticData));
 		this.addSubRouter("/*", 0, new ChallengesRouter(earthDB));
+		this.addSubRouter("/*", 0, new AdventuresRouter(earthDB));
+		this.addSubRouter("/*", 0, new StoreRouter(earthDB));
 	}
 }

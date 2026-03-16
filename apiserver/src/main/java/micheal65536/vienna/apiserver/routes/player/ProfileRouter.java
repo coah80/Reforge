@@ -11,6 +11,7 @@ import micheal65536.vienna.apiserver.types.profile.SplitRubies;
 import micheal65536.vienna.apiserver.utils.BoostUtils;
 import micheal65536.vienna.apiserver.utils.EarthApiResponse;
 import micheal65536.vienna.apiserver.utils.LevelUtils;
+import micheal65536.vienna.apiserver.utils.MapBuilder;
 import micheal65536.vienna.db.DatabaseException;
 import micheal65536.vienna.db.EarthDB;
 import micheal65536.vienna.db.model.player.Boosts;
@@ -108,6 +109,32 @@ public class ProfileRouter extends Router
 		this.addHandler(new Route.Builder(Request.Method.POST, "/player/profile/language").build(), request ->
 		{
 			return Response.create(200);
+		});
+
+		this.addHandler(new Route.Builder(Request.Method.POST, "/player/profile/clockOffset").build(), request ->
+		{
+			return Response.okFromJson(new EarthApiResponse<>(new Object()), EarthApiResponse.class);
+		});
+
+		this.addHandler(new Route.Builder(Request.Method.GET, "/player/environment").build(), request ->
+		{
+			return Response.okFromJson(new EarthApiResponse<>(new MapBuilder<>()
+					.put("biome", "plains")
+					.put("weather", "clear")
+					.put("worldTime", System.currentTimeMillis())
+					.put("timeOfDay", "day")
+					.getMap()
+			), EarthApiResponse.class);
+		});
+
+		this.addHandler(new Route.Builder(Request.Method.POST, "/player/profile/$userId/state/$state").build(), request ->
+		{
+			return Response.okFromJson(new EarthApiResponse<>(new Object()), EarthApiResponse.class);
+		});
+
+		this.addHandler(new Route.Builder(Request.Method.POST, "/player/profile/reset").build(), request ->
+		{
+			return Response.okFromJson(new EarthApiResponse<>(new Object()), EarthApiResponse.class);
 		});
 	}
 }
